@@ -6,6 +6,7 @@
 
 // auto device
 #include "starter.h"
+#include "turnSignal.h" //  реле с поворотниками
 #include "centralLock.h"
 
 #define RELE_1 2
@@ -17,8 +18,10 @@
 #define DEBUG 0 
 
 
-Lock lock(RELE_1, RELE_2);
-Starter starter(RELE_3);
+CentralLock lock(RELE_2, RELE_1);
+//Starter starter(RELE_3);
+TurnSignal turnSignal(RELE_3);
+
 Led led(LED_1);
 
 SerialControl control;
@@ -29,7 +32,8 @@ void setup() {
   led.attach();
   control.attach();
   lock.attach(); 
-  starter.attach();
+  turnSignal.attach();
+  //starter.attach();
 
   Serial.println("Init .. ");
 }
@@ -37,10 +41,13 @@ void setup() {
 void loop() {
   if (control.isPress()) {
     if (control.pressLock()) {
+       lock.lock();
+       
        Serial.println("press lock");  
     }
     
     if (control.pressUnlock()) {
+       lock.unlock();
        Serial.println("press unlock");  
     }
     
@@ -49,6 +56,11 @@ void loop() {
     }
     
     if (control.pressSearch()) {
+      //starter.allowed();
+      led.start();
+      delay(1000);
+      //starter.disabled();
+      led.stop();
        Serial.println("press search");  
     }
   }

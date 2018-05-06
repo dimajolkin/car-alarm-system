@@ -1,17 +1,21 @@
-class Starter: public Attach {
+
+/**
+ * Включение поворотников
+ */
+class TurnSignal: public Attach {
   private:
      int pin;
   public:
-     Starter(int p): pin(p) {}
+     TurnSignal(int p): pin(p) {}
      void attach() {
          pinMode(pin, OUTPUT);
      }
      
-     void allowed() {
+     void enabled() {
          digitalWrite(pin, HIGH);
      }
 
      void disabled() {
          digitalWrite(pin, LOW);
-      }
+     }
 };

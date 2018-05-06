@@ -1,10 +1,11 @@
+
 class CentralLock: public Attach {
   private:
      int plock;
      int plunock;
 
   public:
-     Lock(int pinLock, int pinUnlock): plock(pinLock), plunock(pinUnlock)  {
+     CentralLock(int pinLock, int pinUnlock): plock(pinLock), plunock(pinUnlock)  {
       
      }
 
@@ -14,13 +15,14 @@ class CentralLock: public Attach {
      }
 
      void lock() {
-        digitalWrite(plock, LOW);
-        digitalWrite(plunock, HIGH);  
+        digitalWrite(plock, HIGH);
+        delay(200);
+        digitalWrite(plock, LOW);  
      }
 
      void unlock () {
-        digitalWrite(plock, HIGH);
+        digitalWrite(plunock, HIGH);
+        delay(200);
         digitalWrite(plunock, LOW); 
      }
-  
 };

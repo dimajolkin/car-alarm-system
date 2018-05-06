@@ -1,3 +1,4 @@
+
 class Control: public Attach {
   public:
      virtual bool pressLock() = 0;
