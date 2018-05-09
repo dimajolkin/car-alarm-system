@@ -9,20 +9,25 @@
 #include "turnSignal.h" //  реле с поворотниками
 #include "centralLock.h"
 
-#define RELE_1 2
-#define RELE_2 3
-#define RELE_3 4
-
-#define LED_1 13
-
 #define DEBUG 0 
 
 
-CentralLock lock(RELE_2, RELE_1);
-//Starter starter(RELE_3);
-TurnSignal turnSignal(RELE_3);
+#define PIN_TRUNK 5  //пин багажника
+#define PIN_TURN_SIGNAL 12 // поворотники
+#define PIN_LOCK 11 // запирание
+#define PIN_UNLOCK 9 // отпирание
 
-Led led(LED_1);
+#define PIN_ANTENNA_LED 13 // диод антенны
+#define PIN_IS_ENABLED 2 // включено ли зажигание
+#define PIN_SOUNT 3 // сирена
+#define PIN_STARTER 4 //разрешить включать стартер
+
+
+CentralLock lock(PIN_LOCK, PIN_UNLOCK);
+//Starter starter(RELE_3);
+TurnSignal turnSignal(PIN_TURN_SIGNAL);
+
+Led led(PIN_ANTENNA_LED);
 
 SerialControl control;
 
@@ -56,11 +61,10 @@ void loop() {
     }
     
     if (control.pressSearch()) {
-      //starter.allowed();
-      led.start();
-      delay(1000);
-      //starter.disabled();
-      led.stop();
+      turnSignal.enabled();
+      delay(100);
+      turnSignal.disabled();
+
        Serial.println("press search");  
     }
   }
