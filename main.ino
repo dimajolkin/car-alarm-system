@@ -1,4 +1,4 @@
-
+#include "timer-api.h"
 #include "attach.h"
 #include "control.h"
 #include "led.h"
@@ -31,6 +31,11 @@ Led led(PIN_ANTENNA_LED);
 
 SerialControl control;
 
+void timer_handle_interrupts(int timer) {
+    led.next();
+    control.tick();
+}
+
 void setup() {
   Serial.begin(9600);
 
@@ -41,29 +46,34 @@ void setup() {
   //starter.attach();
 
   Serial.println("Init .. ");
+  
+  // частота=1Гц, период=1с
+  timer_init_ISR_1Hz(TIMER_DEFAULT);
 }
 
 void loop() {
+
   if (control.isPress()) {
     if (control.pressLock()) {
        lock.lock();
-       
+       led.ping();
        Serial.println("press lock");  
     }
     
     if (control.pressUnlock()) {
        lock.unlock();
+       led.ping();
        Serial.println("press unlock");  
     }
     
     if (control.pressTrunk()) {
+       led.ping();
        Serial.println("press trunk");  
     }
     
     if (control.pressSearch()) {
-      turnSignal.enabled();
-      delay(100);
-      turnSignal.disabled();
+       led.ping();
+       turnSignal.open();
 
        Serial.println("press search");  
     }

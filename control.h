@@ -1,4 +1,6 @@
 
+#define TIME_FOR_NEXT_COMMAND 2
+
 class Control: public Attach {
   public:
      virtual bool pressLock() = 0;
@@ -16,7 +18,14 @@ class SerialControl: public Control {
      int p4;
 
      int c = 0;
-     
+     int _tick = 0;
+
+     void serialFlush(){
+        while(Serial.available() > 0) {
+              char t = Serial.read();
+        }
+     } 
+
   public:
      SerialControl() {}
 
@@ -24,11 +33,21 @@ class SerialControl: public Control {
         
      }
 
+     void tick() {
+        _tick++;
+     }
+      
      bool isPress() {
-        if (Serial.available() > 0) {
+        if (_tick > TIME_FOR_NEXT_COMMAND && Serial.available() > 0) {
             c = Serial.read();
         } else {
             c = 0;
+        }
+        
+        serialFlush();
+        if (c == 'a' || c == 'b' || c =='c' || c == 'd') {
+           _tick = 0;
+          
         }
 
         return c > 0;
@@ -36,21 +55,21 @@ class SerialControl: public Control {
      int read() {return c;}
 
      bool pressLock() {
-        return c == '1';
+        return c == 'a';
      }
      
      bool pressUnlock() {
-        return c == '2';
+        return c == 'b';
      }
      
      // открытие багажника
      bool pressTrunk() {
-        return c == '3';
+        return c == 'c';
      }
 
       // открытие багажника
      bool pressSearch() {
-        return c == '4'; 
+        return c == 'd'; 
      }
  };
 

@@ -18,4 +18,10 @@ class TurnSignal: public Attach {
      void disabled() {
          digitalWrite(pin, LOW);
      }
+
+     void open() {
+      enabled();
+      delay(100);
+      disabled();
+     }
 };
